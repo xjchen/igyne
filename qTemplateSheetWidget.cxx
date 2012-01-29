@@ -2469,20 +2469,23 @@ void qTemplateSheetWidget::pushObutrator(int nDepth)
   vtkMRMLScene* mrmlScene=app->mrmlScene();  
   vtkMRMLModelNode* ObutratorNode = vtkMRMLModelNode::SafeDownCast(mrmlScene->GetNodeByID("vtkMRMLModelNode5"));
 
-  vtkSmartPointer<vtkMatrix4x4> vtkmat = vtkSmartPointer<vtkMatrix4x4>::New();
-  vtkmat->Identity();
-  vtkmat->SetElement(2,3,nDepth);
+	if(ObutratorNode!=NULL)
+		{
+		vtkSmartPointer<vtkMatrix4x4> vtkmat = vtkSmartPointer<vtkMatrix4x4>::New();
+		vtkmat->Identity();
+		vtkmat->SetElement(2,3,nDepth);
 
-  vtkSmartPointer<vtkTransformPolyDataFilter> TransformPolyDataFilter=vtkSmartPointer<vtkTransformPolyDataFilter>::New();
-  vtkSmartPointer<vtkTransform> Transform=vtkSmartPointer<vtkTransform>::New();
-  TransformPolyDataFilter->SetInput(m_poly);
-  Transform->SetMatrix(vtkmat);
-  TransformPolyDataFilter->SetTransform(Transform);
-  TransformPolyDataFilter->Update();
+		vtkSmartPointer<vtkTransformPolyDataFilter> TransformPolyDataFilter=vtkSmartPointer<vtkTransformPolyDataFilter>::New();
+		vtkSmartPointer<vtkTransform> Transform=vtkSmartPointer<vtkTransform>::New();
+		TransformPolyDataFilter->SetInput(m_poly);
+		Transform->SetMatrix(vtkmat);
+		TransformPolyDataFilter->SetTransform(Transform);
+		TransformPolyDataFilter->Update();
 
-  vtkSmartPointer<vtkTriangleFilter> triangles=vtkSmartPointer<vtkTriangleFilter>::New();
-  triangles->SetInput(TransformPolyDataFilter->GetOutput());
-  ObutratorNode->SetAndObservePolyData(triangles->GetOutput());    
+		vtkSmartPointer<vtkTriangleFilter> triangles=vtkSmartPointer<vtkTriangleFilter>::New();
+		triangles->SetInput(TransformPolyDataFilter->GetOutput());
+		ObutratorNode->SetAndObservePolyData(triangles->GetOutput());  
+		}
 }
 
 //-----------------------------------------------------------------------------
@@ -2498,21 +2501,25 @@ void qTemplateSheetWidget::showOneNeedle(int i,QRadioButton *RadioButton)
   char* filename;
   filename=sfileName.toLatin1().data();
   vtkMRMLModelNode* NeedleNode = vtkMRMLModelNode::SafeDownCast(mrmlScene->GetNodeByID(filename));
-  vtkMRMLModelDisplayNode* displayNode =NeedleNode->GetModelDisplayNode();
 
-  int nVisibility=displayNode->GetVisibility();  
+	if(NeedleNode!=NULL)
+		{
+		vtkMRMLModelDisplayNode* displayNode =NeedleNode->GetModelDisplayNode();
 
-  if(nVisibility==1)
-		{
-		displayNode->SetVisibility(0);
-		displayNode->SetSliceIntersectionVisibility(0);
-		RadioButton->setChecked(false);
-		}
-  else
-		{
-		displayNode->SetVisibility(1);
-		displayNode->SetSliceIntersectionVisibility(1);
-		RadioButton->setChecked(true);
+		int nVisibility=displayNode->GetVisibility();  
+
+		if(nVisibility==1)
+			{
+			displayNode->SetVisibility(0);
+			displayNode->SetSliceIntersectionVisibility(0);
+			RadioButton->setChecked(false);
+			}
+		else
+			{
+			displayNode->SetVisibility(1);
+			displayNode->SetSliceIntersectionVisibility(1);
+			RadioButton->setChecked(true);
+			}
 		}
 }
 
@@ -2528,18 +2535,22 @@ void qTemplateSheetWidget::showOneNeedle(int i,bool bShowNeedels)
 
   char* filename;
   filename=sfileName.toLatin1().data();
-  vtkMRMLModelNode* NeedleNode = vtkMRMLModelNode::SafeDownCast(mrmlScene->GetNodeByID(filename));
-  vtkMRMLModelDisplayNode* displayNode =NeedleNode->GetModelDisplayNode();
+  vtkMRMLModelNode* NeedleNode = vtkMRMLModelNode::SafeDownCast(mrmlScene->GetNodeByID(filename));	
 
-  if(bShowNeedels)
+	if(NeedleNode!=NULL)
 		{
-		displayNode->SetVisibility(1);
-		displayNode->SetSliceIntersectionVisibility(1);	  
-		}
-  else
-		{
-		displayNode->SetVisibility(0);
-		displayNode->SetSliceIntersectionVisibility(0);	  
+		vtkMRMLModelDisplayNode* displayNode =NeedleNode->GetModelDisplayNode();
+
+		if(bShowNeedels)
+			{
+			displayNode->SetVisibility(1);
+			displayNode->SetSliceIntersectionVisibility(1);	  
+			}
+		else
+			{
+			displayNode->SetVisibility(0);
+			displayNode->SetSliceIntersectionVisibility(0);	  
+			}
 		}
 }
 
@@ -2557,23 +2568,26 @@ void qTemplateSheetWidget::pushOneNeedle(int i, int nDepth)
   filename=sfileName.toLatin1().data();
   vtkMRMLModelNode* NeedleNode = vtkMRMLModelNode::SafeDownCast(mrmlScene->GetNodeByID(filename));
 
-  vtkSmartPointer<vtkMatrix4x4> vtkmat = vtkSmartPointer<vtkMatrix4x4>::New();
-  vtkmat->DeepCopy(m_vtkmat); 
+	if(NeedleNode!=NULL)
+		{
+		vtkSmartPointer<vtkMatrix4x4> vtkmat = vtkSmartPointer<vtkMatrix4x4>::New();
+		vtkmat->DeepCopy(m_vtkmat); 
 
-  vtkmat->SetElement(0,3,m_vtkmat->GetElement(0,3)+p[0][i]);
-  vtkmat->SetElement(1,3,m_vtkmat->GetElement(1,3)+p[1][i]);
-  vtkmat->SetElement(2,3,m_vtkmat->GetElement(2,3)+110.0-nDepth);
+		vtkmat->SetElement(0,3,m_vtkmat->GetElement(0,3)+p[0][i]);
+		vtkmat->SetElement(1,3,m_vtkmat->GetElement(1,3)+p[1][i]);
+		vtkmat->SetElement(2,3,m_vtkmat->GetElement(2,3)+110.0-nDepth);
 
-  vtkSmartPointer<vtkTransformPolyDataFilter> TransformPolyDataFilter=vtkSmartPointer<vtkTransformPolyDataFilter>::New();
-  vtkSmartPointer<vtkTransform> Transform=vtkSmartPointer<vtkTransform>::New();
-  TransformPolyDataFilter->SetInput(m_polyCylinder);
-  Transform->SetMatrix(vtkmat);
-  TransformPolyDataFilter->SetTransform(Transform);
-  TransformPolyDataFilter->Update();
+		vtkSmartPointer<vtkTransformPolyDataFilter> TransformPolyDataFilter=vtkSmartPointer<vtkTransformPolyDataFilter>::New();
+		vtkSmartPointer<vtkTransform> Transform=vtkSmartPointer<vtkTransform>::New();
+		TransformPolyDataFilter->SetInput(m_polyCylinder);
+		Transform->SetMatrix(vtkmat);
+		TransformPolyDataFilter->SetTransform(Transform);
+		TransformPolyDataFilter->Update();
 
-  vtkSmartPointer<vtkTriangleFilter> triangles=vtkSmartPointer<vtkTriangleFilter>::New();
-  triangles->SetInput(TransformPolyDataFilter->GetOutput());
-  NeedleNode->SetAndObservePolyData(triangles->GetOutput());
+		vtkSmartPointer<vtkTriangleFilter> triangles=vtkSmartPointer<vtkTriangleFilter>::New();
+		triangles->SetInput(TransformPolyDataFilter->GetOutput());
+		NeedleNode->SetAndObservePolyData(triangles->GetOutput());
+		}
 }
 
 //-----------------------------------------------------------------------------
@@ -2596,10 +2610,14 @@ void qTemplateSheetWidget::setOneNeedleColor(int i,QPushButton *ColorPushButton)
 		char* filename;
 		filename=sfileName.toLatin1().data();
 		vtkMRMLModelNode* NeedleNode = vtkMRMLModelNode::SafeDownCast(mrmlScene->GetNodeByID(filename));
-		vtkMRMLModelDisplayNode* displayNode =NeedleNode->GetModelDisplayNode();
 
-		displayNode->SetColor(color.red()/255.0f,color.green()/255.0f,color.blue()/255.0f);		
-		ColorPushButton->setStyleSheet(sColor);
+		if(NeedleNode!=NULL)
+			{
+			vtkMRMLModelDisplayNode* displayNode =NeedleNode->GetModelDisplayNode();
+
+			displayNode->SetColor(color.red()/255.0f,color.green()/255.0f,color.blue()/255.0f);		
+			ColorPushButton->setStyleSheet(sColor);
+			}
     }
 }
 
