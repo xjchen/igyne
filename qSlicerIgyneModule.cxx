@@ -13,12 +13,8 @@
   See the License for the specific language governing permissions and
   limitations under the License.
   
-<<<<<<< HEAD
   This file was originally developed by Xiaojun Chen, SPL.
   and was partially funded by NIH grant P41EB015898, P41RR019703, R03EB013792, and U54EB005149.
-=======
-  This file was originally developed by Xiaojun Chen, SPL.  
->>>>>>> c46f7c7e827d4c7307c467571091d7bf54eb80ff
 
 ==============================================================================*/
 
@@ -76,19 +72,14 @@ qSlicerIgyneModule::~qSlicerIgyneModule()
 QString qSlicerIgyneModule::helpText()const
 {
   QString help = 
-<<<<<<< HEAD
     "This module is used for MR-guided gynecologic brachytherapy.<br>"
 		"For more information see: <a href=\"http://www.na-mic.org/Wiki/index.php/2012_Summer_Project_Week:iGyne\">iGyne</a> <br>";
-=======
-    "This module is used for Image-guided gynecology.";
->>>>>>> c46f7c7e827d4c7307c467571091d7bf54eb80ff
   return help;
 }
 
 //-----------------------------------------------------------------------------
 QString qSlicerIgyneModule::acknowledgementText()const
 {
-<<<<<<< HEAD
   QString acknowledgement =
     "This work was partially funded by NIH grant P41EB015898, P41RR019703, R03EB013792, and U54EB005149."
     "<br>"
@@ -108,9 +99,6 @@ QStringList qSlicerIgyneModule::contributors()const
 	moduleContributors << QString("Akila Viswanathan (BWH)");
   moduleContributors << QString("Steve Pieper (Isomics)");  
   return moduleContributors;
-=======
-  return "This work was supported by NAMIC, NAC, and the Slicer Community...";
->>>>>>> c46f7c7e827d4c7307c467571091d7bf54eb80ff
 }
 
 //-----------------------------------------------------------------------------
