@@ -70,7 +70,8 @@
 #include <vtkSphereSource.h>
 #include <vtkIterativeClosestPointTransform.h>
 #include <vtkLandmarkTransform.h>
-#include <vtkCollisionDetectionFilter.h>
+//#include <vtkCollisionDetectionFilter.h>
+#include <vtkAppendPolyData.h>
 
 // ITK includes
 #include <itkImage.h>
@@ -2772,7 +2773,6 @@ void qTemplateSheetWidget::showNeedles()
 		}		
 }
 
-//-----------------------------------------------------------------------------
  void qTemplateSheetWidget::registerCADmodelToImage()
 {
 	std::cout << "Registration is Processing... " << std::endl;
@@ -2781,7 +2781,7 @@ void qTemplateSheetWidget::showNeedles()
 //--------------------------------------------------------------------------------------------------
 
 	qSlicerApplication * app = qSlicerApplication::application();
-  vtkMRMLScene* mrmlScene=app->mrmlScene();
+	vtkMRMLScene* mrmlScene=app->mrmlScene();
 
 	vtkMRMLModelNode* ModelFromImageNode = vtkMRMLModelNode::SafeDownCast(mrmlScene->GetNodeByID("vtkMRMLModelNode69"));
 	if(ModelFromImageNode!=NULL)
@@ -2795,41 +2795,10 @@ void qTemplateSheetWidget::showNeedles()
 		vtkSmartPointer<vtkPoints> glyphPoints=vtkSmartPointer<vtkPoints>::New();
 		vtkSmartPointer<vtkPolyData> glyphInputData=vtkSmartPointer<vtkPolyData>::New();
 		vtkSmartPointer<vtkSphereSource> glyphBalls=vtkSmartPointer<vtkSphereSource>::New();
-		vtkSmartPointer<vtkGlyph3D> glyphPoints3D=vtkSmartPointer<vtkGlyph3D>::New();
-		//vtkSmartPointer<vtkPolyDataMapper> glyphMapper=vtkSmartPointer<vtkPolyDataMapper>::New();
-		//vtkSmartPointer<vtkActor> glyphActor=vtkSmartPointer<vtkActor>::New();
+		vtkSmartPointer<vtkGlyph3D> glyphPoints3D=vtkSmartPointer<vtkGlyph3D>::New();		
 
 		unsigned int pointId=0;
-		//setPointData(35,34,vtkmatInitial,&pointId,glyphPoints);
-		//setPointData(25,36.679,vtkmatInitial,&pointId,glyphPoints);
-		//setPointData(17.679,44,vtkmatInitial,&pointId,glyphPoints);
-		//setPointData(15,54,vtkmatInitial,&pointId,glyphPoints);
-		//setPointData(17.679,64,vtkmatInitial,&pointId,glyphPoints);
-		//setPointData(25,71.321,vtkmatInitial,&pointId,glyphPoints);
-		//setPointData(35,74,vtkmatInitial,&pointId,glyphPoints);
-		//setPointData(45,71.321,vtkmatInitial,&pointId,glyphPoints);
-		//setPointData(52.321,64,vtkmatInitial,&pointId,glyphPoints);
-		//setPointData(55,54,vtkmatInitial,&pointId,glyphPoints);
-		//setPointData(52.321,44,vtkmatInitial,&pointId,glyphPoints);
-		//setPointData(45,36.679,vtkmatInitial,&pointId,glyphPoints);
-
-		//setPointData(29.791,24.456,vtkmatInitial,&pointId,glyphPoints);
-		//setPointData(20,28.019,vtkmatInitial,&pointId,glyphPoints);
-		//setPointData(12.019,34.716,vtkmatInitial,&pointId,glyphPoints);
-		//setPointData(6.809,43.739,vtkmatInitial,&pointId,glyphPoints);
-		//setPointData(5,54,vtkmatInitial,&pointId,glyphPoints);
-		//setPointData(6.809,64.261,vtkmatInitial,&pointId,glyphPoints);
-		//setPointData(12.019,73.284,vtkmatInitial,&pointId,glyphPoints);
-		//setPointData(20,79.981,vtkmatInitial,&pointId,glyphPoints);
-		//setPointData(29.791,83.544,vtkmatInitial,&pointId,glyphPoints);
-		//setPointData(40.209,83.544,vtkmatInitial,&pointId,glyphPoints);
-		//setPointData(50,79.981,vtkmatInitial,&pointId,glyphPoints);
-		//setPointData(57.981,73.284,vtkmatInitial,&pointId,glyphPoints);
-		//setPointData(63.191,64.262,vtkmatInitial,&pointId,glyphPoints);
-		//setPointData(65,54,vtkmatInitial,&pointId,glyphPoints);
-		//setPointData(63.191,43.739,vtkmatInitial,&pointId,glyphPoints);
-		//setPointData(57.981,34.716,vtkmatInitial,&pointId,glyphPoints);
-
+		
 		setPointData(50,28.019,vtkmatInitial,&pointId,glyphPoints);
 		setPointData(40.209,24.456,vtkmatInitial,&pointId,glyphPoints);
 		setPointData(35,14,vtkmatInitial,&pointId,glyphPoints);
@@ -2854,77 +2823,48 @@ void qTemplateSheetWidget::showNeedles()
 		glyphInputData->SetPoints(glyphPoints);
 		glyphInputData->Update();		
 
-		glyphBalls->SetRadius(0.05);
-		glyphBalls->SetThetaResolution(6);
-		glyphBalls->SetPhiResolution(10);
-
-		glyphPoints3D->SetInput(glyphInputData);
-		glyphPoints3D->SetSource(glyphBalls->GetOutput());
-		glyphPoints3D->Update();
-		//glyphMapper->SetInput(glyphPoints3D->GetOutput());
-		//glyphMapper->Update();
-
-		//glyphActor->SetMapper(glyphMapper);		
-		//glyphActor->GetProperty()->SetColor(0, 1, 0);
-
-		vtkSmartPointer<vtkIterativeClosestPointTransform> ICPtransform = vtkSmartPointer<vtkIterativeClosestPointTransform>::New();
-		ICPtransform->SetSource((vtkPolyData *)glyphInputData);			
-		ICPtransform->SetTarget((vtkPolyData *) ModelFromImageNode->GetPolyData());
-
-		ICPtransform->SetCheckMeanDistance(0);
-		ICPtransform->SetMaximumMeanDistance(0.01);
-		ICPtransform->SetMaximumNumberOfIterations(300);
-		ICPtransform->SetMaximumNumberOfLandmarks(1000);
-		ICPtransform->SetMeanDistanceModeToRMS();
-
-		vtkLandmarkTransform* LandmarkTransform=ICPtransform->GetLandmarkTransform() ;
-		LandmarkTransform->SetModeToRigidBody();
-		ICPtransform->Update();		
-
-		int nIterations=ICPtransform->GetNumberOfIterations();
-		vtkSmartPointer<vtkMatrix4x4> FinalMatrix = vtkSmartPointer<vtkMatrix4x4>::New();		
-		FinalMatrix->Multiply4x4(ICPtransform->GetMatrix(), vtkmatInitial,FinalMatrix);		
-		transformNode->SetAndObserveMatrixTransformToParent(FinalMatrix);	
-
 		//register the obturator
-		//vtkMRMLModelNode* ModelFromImageNode1 = vtkMRMLModelNode::SafeDownCast(mrmlScene->GetNodeByID("vtkMRMLModelNode70"));
-		//if(ModelFromImageNode1!=NULL)
-		//	{
-		//	//vtkMRMLModelNode* ObutratorNode = vtkMRMLModelNode::SafeDownCast(mrmlScene->GetNodeByID("vtkMRMLModelNode5"));			
+		vtkMRMLModelNode* ModelFromImageNode1 = vtkMRMLModelNode::SafeDownCast(mrmlScene->GetNodeByID("vtkMRMLModelNode70"));
+		if(ModelFromImageNode1!=NULL)
+			{
+			vtkSmartPointer<vtkTransformPolyDataFilter> TransformPolyDataFilter=vtkSmartPointer<vtkTransformPolyDataFilter>::New();
+			vtkSmartPointer<vtkTransform> Transform=vtkSmartPointer<vtkTransform>::New();
+			TransformPolyDataFilter->SetInput(m_poly);
+			Transform->SetMatrix(vtkmatInitial);			
+			TransformPolyDataFilter->SetTransform(Transform);
+			TransformPolyDataFilter->Update();
 
-		//	vtkSmartPointer<vtkTransformPolyDataFilter> TransformPolyDataFilter=vtkSmartPointer<vtkTransformPolyDataFilter>::New();
-		//	vtkSmartPointer<vtkTransform> Transform=vtkSmartPointer<vtkTransform>::New();
-		//	TransformPolyDataFilter->SetInput(m_poly);
-		//	Transform->SetMatrix(FinalMatrix);
-		//	TransformPolyDataFilter->SetTransform(Transform);
-		//	TransformPolyDataFilter->Update();
+			vtkSmartPointer<vtkAppendPolyData> addSource = vtkSmartPointer<vtkAppendPolyData>::New();
+			addSource->AddInput((vtkPolyData *) glyphInputData);
+			addSource->AddInput((vtkPolyData *) TransformPolyDataFilter->GetOutput());
+			addSource->Update();
 
-		//	vtkSmartPointer<vtkIterativeClosestPointTransform> ICPtransform1 = vtkSmartPointer<vtkIterativeClosestPointTransform>::New();
-		//	ICPtransform1->SetSource((vtkPolyData *) TransformPolyDataFilter->GetOutput());			
-		//	ICPtransform1->SetTarget((vtkPolyData *) ModelFromImageNode1->GetPolyData());
+			vtkSmartPointer<vtkAppendPolyData> addTarget = vtkSmartPointer<vtkAppendPolyData>::New();
+			addTarget->AddInput((vtkPolyData *) ModelFromImageNode->GetPolyData());
+			addTarget->AddInput((vtkPolyData *) ModelFromImageNode1->GetPolyData());
+			addTarget->Update();
 
-		//	ICPtransform1->SetCheckMeanDistance(0);
-		//	ICPtransform1->SetMaximumMeanDistance(0.01);
-		//	ICPtransform1->SetMaximumNumberOfIterations(300);
-		//	ICPtransform1->SetMaximumNumberOfLandmarks(1000);
-		//	ICPtransform1->SetMeanDistanceModeToRMS();
+			vtkSmartPointer<vtkIterativeClosestPointTransform> ICPtransform1 = vtkSmartPointer<vtkIterativeClosestPointTransform>::New();			
+			ICPtransform1->SetSource((vtkPolyData *) addSource->GetOutput());
+			ICPtransform1->SetTarget((vtkPolyData *) addTarget->GetOutput());			
 
-		//	vtkLandmarkTransform* LandmarkTransform1=ICPtransform1->GetLandmarkTransform() ;
-		//	LandmarkTransform1->SetModeToRigidBody();
-		//	ICPtransform1->Update();
-		//	//QMessageBox::information(0, "", "false");
+			ICPtransform1->SetCheckMeanDistance(0);
+			ICPtransform1->SetMaximumMeanDistance(0.01);
+			ICPtransform1->SetMaximumNumberOfIterations(300);
+			ICPtransform1->SetMaximumNumberOfLandmarks(1000);
+			ICPtransform1->SetMeanDistanceModeToRMS();
 
-		//	int nIterations1=ICPtransform1->GetNumberOfIterations();
-		//	vtkSmartPointer<vtkMatrix4x4> FinalMatrix1 = vtkSmartPointer<vtkMatrix4x4>::New();		
-		//	FinalMatrix1->Multiply4x4(ICPtransform1->GetMatrix(), FinalMatrix,FinalMatrix1);		
-		//	transformNode->SetAndObserveMatrixTransformToParent(FinalMatrix1);
-		//	}
+			vtkLandmarkTransform* LandmarkTransform1=ICPtransform1->GetLandmarkTransform() ;
+			LandmarkTransform1->SetModeToRigidBody();
+			ICPtransform1->Update();			
 
-		std::cout << "Result = " << std::endl;
-		std::cout << " Number of Iterations       = " << nIterations  << std::endl;		
+			int nIterations1=ICPtransform1->GetNumberOfIterations();
+			vtkSmartPointer<vtkMatrix4x4> FinalMatrix1 = vtkSmartPointer<vtkMatrix4x4>::New();		
+			FinalMatrix1->Multiply4x4(ICPtransform1->GetMatrix(), vtkmatInitial,FinalMatrix1);		
+			transformNode->SetAndObserveMatrixTransformToParent(FinalMatrix1);
+			}	
 		}
 }
-
 //-----------------------------------------------------------------------------
 void qTemplateSheetWidget::setPointData(double fHoleOriginX,double fHoleOriginY,vtkSmartPointer<vtkMatrix4x4> vtkmatInitial,
 											unsigned int *pointId,vtkSmartPointer<vtkPoints> glyphPoints)
@@ -2958,82 +2898,82 @@ qTemplateSheetWidget::qTemplateSheetWidget(QWidget* parentWidget)
 //-----------------------------------------------------------------------------
 void qTemplateSheetWidget::selectNeedles()
 {
-  Q_D(qTemplateSheetWidget);
+ // Q_D(qTemplateSheetWidget);
 
-	qSlicerApplication * app = qSlicerApplication::application();
-  vtkMRMLScene* mrmlScene=app->mrmlScene();
-	vtkMRMLModelNode* ModelFromImageNode = vtkMRMLModelNode::SafeDownCast(mrmlScene->GetNodeByID("vtkMRMLModelNode70"));
+	//qSlicerApplication * app = qSlicerApplication::application();
+ // vtkMRMLScene* mrmlScene=app->mrmlScene();
+	//vtkMRMLModelNode* ModelFromImageNode = vtkMRMLModelNode::SafeDownCast(mrmlScene->GetNodeByID("vtkMRMLModelNode70"));
 
-	if(ModelFromImageNode!=NULL)
-		{
-		vtkSmartPointer<vtkCollisionDetectionFilter> collide = vtkSmartPointer<vtkCollisionDetectionFilter>::New();
-		vtkSmartPointer<vtkMatrix4x4> matrix0 = vtkSmartPointer<vtkMatrix4x4>::New();
-		vtkSmartPointer<vtkMatrix4x4> matrix1 = vtkSmartPointer<vtkMatrix4x4>::New();		
-		vtkSmartPointer<vtkMatrix4x4> matrix2 = vtkSmartPointer<vtkMatrix4x4>::New();	
+	//if(ModelFromImageNode!=NULL)
+	//	{
+	//	vtkSmartPointer<vtkCollisionDetectionFilter> collide = vtkSmartPointer<vtkCollisionDetectionFilter>::New();
+	//	vtkSmartPointer<vtkMatrix4x4> matrix0 = vtkSmartPointer<vtkMatrix4x4>::New();
+	//	vtkSmartPointer<vtkMatrix4x4> matrix1 = vtkSmartPointer<vtkMatrix4x4>::New();		
+	//	vtkSmartPointer<vtkMatrix4x4> matrix2 = vtkSmartPointer<vtkMatrix4x4>::New();	
 
-		collide->SetInput(0,(vtkPolyData *) ModelFromImageNode->GetPolyData());
-		//collide->SetInput(1,m_polyCylinder);
-		collide->SetMatrix(0, matrix0);
+	//	collide->SetInput(0,(vtkPolyData *) ModelFromImageNode->GetPolyData());
+	//	//collide->SetInput(1,m_polyCylinder);
+	//	collide->SetMatrix(0, matrix0);
 
-		vtkMRMLLinearTransformNode* transformNode = vtkMRMLLinearTransformNode::SafeDownCast(mrmlScene->GetNodeByID("vtkMRMLLinearTransformNode4"));
-		vtkMatrix4x4* vtkmatInitial = transformNode->GetMatrixTransformToParent();
+	//	vtkMRMLLinearTransformNode* transformNode = vtkMRMLLinearTransformNode::SafeDownCast(mrmlScene->GetNodeByID("vtkMRMLLinearTransformNode4"));
+	//	vtkMatrix4x4* vtkmatInitial = transformNode->GetMatrixTransformToParent();
 
-		int nContacts;
-		for(int i=0; i<63; i++)
-			{
-			QString sfileName;
-			sfileName.sprintf("%d", i+6);
-			sfileName="vtkMRMLModelNode"+sfileName;		
+	//	int nContacts;
+	//	for(int i=0; i<63; i++)
+	//		{
+	//		QString sfileName;
+	//		sfileName.sprintf("%d", i+6);
+	//		sfileName="vtkMRMLModelNode"+sfileName;		
 
-			char* filename;
-			filename=sfileName.toLatin1().data();
-			vtkMRMLModelNode* NeedleNode = vtkMRMLModelNode::SafeDownCast(mrmlScene->GetNodeByID(filename));
+	//		char* filename;
+	//		filename=sfileName.toLatin1().data();
+	//		vtkMRMLModelNode* NeedleNode = vtkMRMLModelNode::SafeDownCast(mrmlScene->GetNodeByID(filename));
 
-			vtkSmartPointer<vtkMatrix4x4> vtkmat = vtkSmartPointer<vtkMatrix4x4>::New();
-			vtkmat->DeepCopy(m_vtkmat); 
+	//		vtkSmartPointer<vtkMatrix4x4> vtkmat = vtkSmartPointer<vtkMatrix4x4>::New();
+	//		vtkmat->DeepCopy(m_vtkmat); 
 
-			vtkmat->SetElement(0,3,m_vtkmat->GetElement(0,3)+p[0][i]);
-			vtkmat->SetElement(1,3,m_vtkmat->GetElement(1,3)+p[1][i]);
-			vtkmat->SetElement(2,3,m_vtkmat->GetElement(2,3)-100.0);
+	//		vtkmat->SetElement(0,3,m_vtkmat->GetElement(0,3)+p[0][i]);
+	//		vtkmat->SetElement(1,3,m_vtkmat->GetElement(1,3)+p[1][i]);
+	//		vtkmat->SetElement(2,3,m_vtkmat->GetElement(2,3)-100.0);
 
-			matrix1->Multiply4x4(vtkmatInitial,vtkmat,matrix1);	
+	//		matrix1->Multiply4x4(vtkmatInitial,vtkmat,matrix1);	
 
-			vtkSmartPointer<vtkTransformPolyDataFilter> TransformPolyDataFilter=vtkSmartPointer<vtkTransformPolyDataFilter>::New();
-			vtkSmartPointer<vtkTransform> Transform=vtkSmartPointer<vtkTransform>::New();
-			TransformPolyDataFilter->SetInput(m_polyCylinder);
-			Transform->SetMatrix(matrix1);
-			TransformPolyDataFilter->SetTransform(Transform);
-			TransformPolyDataFilter->Update();
+	//		vtkSmartPointer<vtkTransformPolyDataFilter> TransformPolyDataFilter=vtkSmartPointer<vtkTransformPolyDataFilter>::New();
+	//		vtkSmartPointer<vtkTransform> Transform=vtkSmartPointer<vtkTransform>::New();
+	//		TransformPolyDataFilter->SetInput(m_polyCylinder);
+	//		Transform->SetMatrix(matrix1);
+	//		TransformPolyDataFilter->SetTransform(Transform);
+	//		TransformPolyDataFilter->Update();
 
-			vtkSmartPointer<vtkTriangleFilter> triangles=vtkSmartPointer<vtkTriangleFilter>::New();
-			triangles->SetInput(TransformPolyDataFilter->GetOutput());
+	//		vtkSmartPointer<vtkTriangleFilter> triangles=vtkSmartPointer<vtkTriangleFilter>::New();
+	//		triangles->SetInput(TransformPolyDataFilter->GetOutput());
 
-			collide->SetInput(1,(vtkPolyData *) triangles->GetOutput());
-			collide->SetMatrix(1, matrix2);
-			collide->SetBoxTolerance(0.0);
-			collide->SetCellTolerance(0.0);
-			collide->SetNumberOfCellsPerBucket(2);
-			collide->SetCollisionModeToAllContacts();
-			collide->GenerateScalarsOn();
-			collide->Update();
+	//		collide->SetInput(1,(vtkPolyData *) triangles->GetOutput());
+	//		collide->SetMatrix(1, matrix2);
+	//		collide->SetBoxTolerance(0.0);
+	//		collide->SetCellTolerance(0.0);
+	//		collide->SetNumberOfCellsPerBucket(2);
+	//		collide->SetCollisionModeToAllContacts();
+	//		collide->GenerateScalarsOn();
+	//		collide->Update();
 
-			nContacts=collide->GetNumberOfContacts();
-			vtkMRMLModelDisplayNode* displayNode =NeedleNode->GetModelDisplayNode();
+	//		nContacts=collide->GetNumberOfContacts();
+	//		vtkMRMLModelDisplayNode* displayNode =NeedleNode->GetModelDisplayNode();
 
-			if(nContacts>0)
-				{
-				displayNode->SetVisibility(1);
-				displayNode->SetSliceIntersectionVisibility(1);
-				setRadioButton(i,true);
-				}	
-			else
-				{
-				displayNode->SetVisibility(0);
-				displayNode->SetSliceIntersectionVisibility(0);
-				setRadioButton(i,false);
-				}
-			}	
-		}
+	//		if(nContacts>0)
+	//			{
+	//			displayNode->SetVisibility(1);
+	//			displayNode->SetSliceIntersectionVisibility(1);
+	//			setRadioButton(i,true);
+	//			}	
+	//		else
+	//			{
+	//			displayNode->SetVisibility(0);
+	//			displayNode->SetSliceIntersectionVisibility(0);
+	//			setRadioButton(i,false);
+	//			}
+	//		}	
+	//	}
 }
 
 //-----------------------------------------------------------------------------
