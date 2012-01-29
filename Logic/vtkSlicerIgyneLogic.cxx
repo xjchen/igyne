@@ -15,7 +15,7 @@
 
 ==============================================================================*/
 
-// Igyne includes
+// Igyne Logic includes
 #include "vtkSlicerIgyneLogic.h"
 
 // MRML includes
@@ -46,13 +46,13 @@ void vtkSlicerIgyneLogic::PrintSelf(ostream& os, vtkIndent indent)
 }
 
 //---------------------------------------------------------------------------
-void vtkSlicerIgyneLogic::InitializeEventListeners()
+void vtkSlicerIgyneLogic::SetMRMLSceneInternal(vtkMRMLScene * newScene)
 {
   vtkNew<vtkIntArray> events;
   events->InsertNextValue(vtkMRMLScene::NodeAddedEvent);
   events->InsertNextValue(vtkMRMLScene::NodeRemovedEvent);
   events->InsertNextValue(vtkMRMLScene::EndBatchProcessEvent);
-  this->SetAndObserveMRMLSceneEventsInternal(this->GetMRMLScene(), events.GetPointer());
+  this->SetAndObserveMRMLSceneEventsInternal(newScene, events.GetPointer());
 }
 
 //-----------------------------------------------------------------------------

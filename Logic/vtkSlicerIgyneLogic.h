@@ -35,23 +35,21 @@
 #include "vtkSlicerIgyneModuleLogicExport.h"
 
 
-/// \ingroup Slicer_QtModules_Igyne
+/// \ingroup Slicer_QtModules_ExtensionTemplate
 class VTK_SLICER_IGYNE_MODULE_LOGIC_EXPORT vtkSlicerIgyneLogic :
   public vtkSlicerModuleLogic
 {
 public:
-  
+
   static vtkSlicerIgyneLogic *New();
-  vtkTypeMacro(vtkSlicerIgyneLogic,vtkSlicerModuleLogic);
+  vtkTypeMacro(vtkSlicerIgyneLogic, vtkSlicerModuleLogic);
   void PrintSelf(ostream& os, vtkIndent indent);
-  
-  /// Initialize listening to MRML events
-  void InitializeEventListeners();
 
 protected:
   vtkSlicerIgyneLogic();
   virtual ~vtkSlicerIgyneLogic();
 
+  virtual void SetMRMLSceneInternal(vtkMRMLScene* newScene);
   /// Register MRML Node classes to Scene. Gets called automatically when the MRMLScene is attached to this logic class.
   virtual void RegisterNodes();
   virtual void UpdateFromMRMLScene();
@@ -64,4 +62,3 @@ private:
 };
 
 #endif
-
