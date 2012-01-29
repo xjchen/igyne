@@ -22,17 +22,21 @@ set(qt_module_SRCS
   qSlicerIgyneModule.h
   qSlicerIgyneModuleWidget.cxx
   qSlicerIgyneModuleWidget.h
+  qTemplateSheetWidget.cxx
+  qTemplateSheetWidget.h  
   )
 
 # Headers that should run through moc
 set(qt_module_MOC_SRCS
   qSlicerIgyneModule.h
   qSlicerIgyneModuleWidget.h
+  qTemplateSheetWidget.h  
   )
 
 # UI files
 set(qt_module_UI_SRCS
   Resources/UI/qSlicerIgyneModule.ui
+  Resources/UI/qTemplateSheetWidget.ui  
   )
 
 # Additional Target libraries
@@ -58,6 +62,6 @@ slicerMacroBuildQtModule(
   )
 
 
-if(BUILD_TESTING)
-  add_subdirectory(Testing)
-endif()
+# if(BUILD_TESTING)
+#   add_subdirectory(Testing)
+# endif()

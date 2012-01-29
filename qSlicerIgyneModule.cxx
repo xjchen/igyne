@@ -13,7 +13,8 @@
   See the License for the specific language governing permissions and
   limitations under the License.
   
-  This file was originally developed by Xiaojun Chen, SPL.  
+  This file was originally developed by Xiaojun Chen, SPL.
+  and was partially funded by NIH grant P41EB015898, P41RR019703, R03EB013792, and U54EB005149.
 
 ==============================================================================*/
 
@@ -71,14 +72,33 @@ qSlicerIgyneModule::~qSlicerIgyneModule()
 QString qSlicerIgyneModule::helpText()const
 {
   QString help = 
-    "This module is used for Image-guided gynecology.";
+    "This module is used for MR-guided gynecologic brachytherapy.<br>"
+		"For more information see: <a href=\"http://www.na-mic.org/Wiki/index.php/2012_Summer_Project_Week:iGyne\">iGyne</a> <br>";
   return help;
 }
 
 //-----------------------------------------------------------------------------
 QString qSlicerIgyneModule::acknowledgementText()const
 {
-  return "This work was supported by NAMIC, NAC, and the Slicer Community...";
+  QString acknowledgement =
+    "This work was partially funded by NIH grant P41EB015898, P41RR019703, R03EB013792, and U54EB005149."
+    "<br>"
+    "See <a href=\"http://www.na-mic.org/Wiki/index.php/2012_Summer_Project_Week:iGyne\">iGyne</a> for details.<br>"
+    "The module was contributed by Xiaojun Chen (SPL, BWH), "
+    "with help from Jan Egger (SPL, BWH),Tina Kapur (SPL, BWH),Akila Viswanathan (BWH) and Steve Pieper (Isomics). ";
+  return acknowledgement;
+}
+
+//-----------------------------------------------------------------------------
+QStringList qSlicerIgyneModule::contributors()const
+{
+  QStringList moduleContributors;
+  moduleContributors << QString("Xiaojun Chen (SPL, BWH)");
+	moduleContributors << QString("Jan Egger (SPL, BWH)");
+	moduleContributors << QString("Tina Kapur (SPL, BWH)");
+	moduleContributors << QString("Akila Viswanathan (BWH)");
+  moduleContributors << QString("Steve Pieper (Isomics)");  
+  return moduleContributors;
 }
 
 //-----------------------------------------------------------------------------

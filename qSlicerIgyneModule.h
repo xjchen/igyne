@@ -14,6 +14,7 @@
   limitations under the License.
   
   This file was originally developed by Xiaojun Chen, SPL.
+  and was partially funded by NIH grant P41EB015898, P41RR019703, R03EB013792, and U54EB005149.
 
 ==============================================================================*/
 
@@ -42,11 +43,9 @@ public:
 
   qSlicerGetTitleMacro(QTMODULE_TITLE);
   
-  /// Help to use the module
   virtual QString helpText()const;
-
-  /// Return acknowledgements
   virtual QString acknowledgementText()const;
+  virtual QStringList contributors()const;
   
   /// Return a custom icon for the module
   virtual QIcon icon()const;
